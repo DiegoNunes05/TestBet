@@ -7,6 +7,7 @@ import BetCard from "./components/BetCard";
 import MobileMenu from "./components/MobileMenu";
 import { Fixture } from "../../types";
 import {format} from "date-fns";
+import {ptBR} from "date-fns/locale";
 
 interface Event {
   id: number;
@@ -27,9 +28,10 @@ export default function HomePage() {
   const [darkMode, setDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeLeague, setActiveLeague] = useState<string>("Bundesliga");
-  const [upcomingMatches, setUpcomingMatches] = useState<Fixture[]>([]);
+  const [upcomingMatches, setUpcomingMatches] = useState<{ [date: string]: Fixture[] }>({});
   const [loading, setLoading] = useState(false);
   const [odds, setOdds] = useState<any[]>([]);
+  
 
   const fetchOddsByFixtureId = async (fixtureId: number) => {
     const apiKey = process.env.NEXT_PUBLIC_API_FOOTBALL_KEY;
@@ -73,13 +75,32 @@ export default function HomePage() {
     return data.response;
   };
 
+  const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
+  const groupMatchesByDate = (matches: Fixture[]) => {
+    return matches.reduce((acc: {[date: string]: Fixture[]}, match) => {
+      let matchDate = format(new Date(match.fixture.date), "ccc, dd MMM", {
+        locale: ptBR,
+      }).toLowerCase();
+
+      matchDate = capitalizeFirstLetter(matchDate);
+
+      if (!acc[matchDate]) {
+        acc[matchDate] = [];
+      }
+      acc[matchDate].push(match);
+      return acc;
+    }, {});
+  };
+
   const handleLeagueChange = async (leagueName: string, leagueId: number) => {
     setActiveLeague(leagueName);
     setLoading(true);
     try {
       // Buscar as partidas para a liga selecionada
       const matches = await fetchUpcomingMatches(leagueId);
-      console.log("Matches:", matches);
 
       // Para cada partida, buscar odds por fixture
       const oddsPromises = matches.map((match: Fixture) =>
@@ -88,7 +109,6 @@ export default function HomePage() {
 
       // Esperar todas as promessas de odds serem resolvidas
       const oddsResults = await Promise.all(oddsPromises);
-      console.log("Odds Results:", oddsResults);
 
       // Associa as odds às partidas correspondentes
       const matchesWithOdds = matches.map((match: Fixture, index: number) => ({
@@ -96,8 +116,9 @@ export default function HomePage() {
         odds: oddsResults[index]?.[0]?.bookmakers[0]?.bets[0]?.values || [],
       }));
 
-      console.log("Matches with Odds:", matchesWithOdds);
-      setUpcomingMatches(matchesWithOdds);
+      // Agrupar partidas por data
+      const groupedMatches = groupMatchesByDate(matchesWithOdds);
+      setUpcomingMatches(groupedMatches);
     } catch (error) {
       console.error("Erro ao buscar partidas e odds:", error);
     } finally {
@@ -137,30 +158,46 @@ export default function HomePage() {
               <p>Loading matches...</p>
             ) : (
               <div className="flex flex-col gap-6 w-full md:w-[90%] lg:w-[90%]">
-                {upcomingMatches.length > 0 ? (
-                  upcomingMatches.map((match) => {
-                    // Aqui você formata as odds antes de passar para o BetCard
-                    const formattedOdds = Array.isArray(match.odds)
-                      ? match.odds.map((odd) => ({
-                          value: odd.value || "N/A",
-                          odd: odd.odd ? odd.odd.toString() : "N/A",
-                        }))
-                      : [];
+                {Object.keys(upcomingMatches).length > 0 ? (
+                  Object.entries(upcomingMatches).map(([date, matches]) => (
+                    <div key={date}>
+                      <h2
+                        className={`text-md font-medium rounded-t-lg flex justify-center ${
+                          darkMode ? "bg-slate-500" : "bg-slate-200"
+                        }`}
+                      >
+                        {date}
+                      </h2>
+                      <div className="flex flex-col gap-4">
+                        {matches.map((match, index) => {
+                          const formattedOdds = Array.isArray(match.odds)
+                            ? match.odds.map((odd) => ({
+                                value: odd.value || "N/A",
+                                odd: odd.odd ? odd.odd.toString() : "N/A",
+                              }))
+                            : [];
+                            
+                          const isFirstCard = index === 0;
 
-                    return (
-                      <BetCard
-                        odds={formattedOdds}
-                        darkMode={darkMode}
-                        event={`${match.teams.home.name} vs ${match.teams.away.name}`}
-                        homeTeam={match.teams.home.name}
-                        awayTeam={match.teams.away.name}
-                        matchTime={format(
-                          new Date(match.fixture.date),
-                          "HH:mm"
-                        )}
-                      />
-                    );
-                  })
+                          return (
+                            <BetCard
+                              key={match.fixture.id}
+                              odds={formattedOdds}
+                              darkMode={darkMode}
+                              event={`${match.teams.home.name} vs ${match.teams.away.name}`}
+                              homeTeam={match.teams.home.name}
+                              awayTeam={match.teams.away.name}
+                              matchTime={format(
+                                new Date(match.fixture.date),
+                                "HH:mm"
+                              )}                              
+                              isFirstCard={isFirstCard}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))
                 ) : (
                   <p>No matches available for this league.</p>
                 )}

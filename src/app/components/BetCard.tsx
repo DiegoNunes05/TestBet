@@ -17,6 +17,7 @@ interface BetCardProps {
   homeTeam: string;
   awayTeam: string;
   matchTime: string;
+  isFirstCard?: boolean;
 }
 
 const BetCard: React.FC<BetCardProps> = ({
@@ -27,6 +28,7 @@ const BetCard: React.FC<BetCardProps> = ({
   homeTeam,
   awayTeam,
   matchTime,
+  isFirstCard = false,
 }) => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -73,9 +75,9 @@ const BetCard: React.FC<BetCardProps> = ({
 
   return (
     <div
-      className={`${
-        darkMode ? "bg-gray-800" : "bg-white"
-      } rounded-lg shadow-md pt-2`}
+      className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-md pt-2 ${
+        isFirstCard ? "rounded-b-lg" : ""
+      } ${isFirstCard ? "" : "rounded-lg"}`}
     >
       <div className="px-3 mb-3 flex justify-between items-center">
         <button className="mb-3 text-lg font-poppins">{event}</button>
