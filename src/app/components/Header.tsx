@@ -1,5 +1,12 @@
 import Link from "next/link";
 import Switch from "./Switch";
+import { useAuth } from "@/lib/useAuth";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebaseConfig";
+import router from "next/router";
 
 interface HeaderProps {
   darkMode: boolean;
@@ -7,6 +14,19 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({darkMode, setDarkMode}) => {
+  const {user} = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Redireciona para a página de login ou inicial após o logout
+      router.push("/login"); // Use o Next.js useRouter para redirecionar
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+    }
+  };
+
+
   return (
     <header
       className={`p-4 relative ${
@@ -21,7 +41,44 @@ const Header: React.FC<HeaderProps> = ({darkMode, setDarkMode}) => {
             TestBet
           </h1>
         </Link>
-        <Switch darkMode={darkMode} setDarkMode={setDarkMode} />
+        <div className="flex flex-row gap-4">
+          <Switch darkMode={darkMode} setDarkMode={setDarkMode} />
+          {user && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex items-center gap-2 focus:outline-none">
+                  <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-2 mt-2 bg-white shadow-lg rounded-lg z-50">
+                <Link
+                  href="/profile"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                >
+                  Minha Conta
+                </Link>
+                <Link
+                  href="/messages"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                >
+                  Mensagens
+                </Link>
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                >
+                  Configurações
+                </Link>
+                <button
+                  className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100"
+                  onClick={handleLogout}
+                >
+                  Sair
+                </button>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
       </div>
       <style jsx>{`
         header::after {

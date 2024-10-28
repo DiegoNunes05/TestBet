@@ -85,3 +85,59 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+.scroll-container {
+  overflow-y: scroll;
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #4a5568;
+  border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.custom-focus {
+  border: 2px solid transparent;
+  padding-left: 0.8em;
+  outline: none;
+  overflow: hidden;
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  transition: all 0.5s;
+}
+
+.custom-focus:hover,
+.custom-focus:focus {
+  border: 2px solid #4A9DEC;
+  box-shadow: 0px 0px 7px rgba(74, 157, 236, 0.2);
+  background-color: white;
+}
+
+.custom-focus-2 {
+  border-bottom: 2px solid transparent;
+  outline: none;
+  overflow: hidden;
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  transition: all 0.5s;
+}
+
+.custom-focus-2:hover,
+.custom-focus-2:focus {
+  border-bottom: 1px solid #4A9DEC;
+  box-shadow: 0px 2px 7px rgba(74, 157, 236, 0.2);
+  background-color: white;
+}
+
+.hover-button {
+  transition: all 0.3s ease-in-out;
+}

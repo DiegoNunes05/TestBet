@@ -8,6 +8,8 @@ import MobileMenu from "./components/MobileMenu";
 import { Fixture } from "../../types";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
+import AuthGuard from "./AuthGuard";
+import Loader from "./components/Loader";
 
 interface Event {
   id: number;
@@ -63,7 +65,7 @@ export default function HomePage() {
   const fetchUpcomingMatches = async (leagueId: number) => {
     const apiKey = process.env.NEXT_PUBLIC_API_FOOTBALL_KEY; // Certifique-se de definir sua chave de API no .env
     const response = await fetch(
-      `https://api-football-v1.p.rapidapi.com/v3/fixtures?league=${leagueId}&next=5`,
+      `https://api-football-v1.p.rapidapi.com/v3/fixtures?league=${leagueId}&next=10`,
       {
         headers: {
           "x-rapidapi-key": apiKey ?? "", // Garante que a chave não seja undefined
@@ -126,92 +128,95 @@ export default function HomePage() {
     }
   };
 
-  useEffect(() => {
-    // Você pode definir um ID inicial de liga aqui para buscar as partidas da liga padrão
-    handleLeagueChange("Bundesliga", 78); // Exemplo com o ID da Bundesliga
+  useEffect(() => {  
+    handleLeagueChange("Bundesliga", 78);
   }, []);
 
   return (
-    <div
-      className={`min-h-screen ${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
-      }`}
-    >
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <AuthGuard>
+      <div
+        className={`min-h-screen ${
+          darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
+        }`}
+      >
+        <Header darkMode={darkMode} setDarkMode={setDarkMode} />
 
-      <div className="flex justify-center">
-        <div className="flex w-full max-w-7xl">
-          <Sidebar
-            setActiveLeague={(name: string, id: number) =>
-              handleLeagueChange(name, id)
-            }
-            menuOpen={menuOpen}
-            setMenuOpen={setMenuOpen}
-            darkMode={darkMode}
-            className=""
-          />
-          <main className="flex-1 p-4 md:ml-56 overflow-y-auto h-[calc(100vh-80px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
-            <h1 className="text-3xl font-bold mb-5 font-bebas">
-              {activeLeague ? `${activeLeague} Matches` : "Select a League"}
-            </h1>
-            {loading ? (
-              <p>Loading matches...</p>
-            ) : (
-              <div className="flex flex-col gap-6 w-full md:w-[90%] lg:w-[90%]">
-                {Object.keys(upcomingMatches).length > 0 ? (
-                  Object.entries(upcomingMatches).map(([date, matches]) => (
-                    <div key={date}>
-                      <h2
-                        className={`text-md font-medium rounded-t-lg flex justify-center ${
-                          darkMode ? "bg-slate-500" : "bg-slate-200"
-                        }`}
-                      >
-                        {date}
-                      </h2>
-                      <div className="flex flex-col gap-4">
-                        {matches.map((match, index) => {
-                          const formattedOdds = Array.isArray(match.odds)
-                            ? match.odds.map((odd) => ({
-                                value: odd.value || "N/A",
-                                odd: odd.odd ? odd.odd.toString() : "N/A",
-                              }))
-                            : [];
-                            
-                          const isFirstCard = index === 0;
+        <div className="flex justify-center">
+          <div className="flex w-full max-w-7xl">
+            <Sidebar
+              setActiveLeague={(name: string, id: number) =>
+                handleLeagueChange(name, id)
+              }
+              menuOpen={menuOpen}
+              setMenuOpen={setMenuOpen}
+              darkMode={darkMode}
+              className=""
+            />
+            <main className="flex-1 p-4 md:ml-56 overflow-y-auto h-[calc(100vh-80px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
+              <h1 className="text-3xl font-bold mb-5 font-bebas">
+                {activeLeague ? `${activeLeague} Matches` : "Select a League"}
+              </h1>
+              {loading ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader />
+                </div>
+              ) : (
+                <div className="flex flex-col gap-6 w-full md:w-[90%] lg:w-[90%]">
+                  {Object.keys(upcomingMatches).length > 0 ? (
+                    Object.entries(upcomingMatches).map(([date, matches]) => (
+                      <div key={date}>
+                        <h2
+                          className={`text-md font-medium rounded-t-lg flex justify-center ${
+                            darkMode ? "bg-slate-500" : "bg-slate-200"
+                          }`}
+                        >
+                          {date}
+                        </h2>
+                        <div className="flex flex-col gap-4">
+                          {matches.map((match, index) => {
+                            const formattedOdds = Array.isArray(match.odds)
+                              ? match.odds.map((odd) => ({
+                                  value: odd.value || "N/A",
+                                  odd: odd.odd ? odd.odd.toString() : "N/A",
+                                }))
+                              : [];
 
-                          return (
-                            <BetCard
-                              key={match.fixture.id}
-                              odds={formattedOdds}
-                              darkMode={darkMode}
-                              event={`${match.teams.home.name} vs ${match.teams.away.name}`}
-                              homeTeam={match.teams.home.name}
-                              awayTeam={match.teams.away.name}
-                              matchTime={format(
-                                new Date(match.fixture.date),
-                                "HH:mm"
-                              )}                              
-                              isFirstCard={isFirstCard}
-                            />
-                          );
-                        })}
+                            const isFirstCard = index === 0;
+
+                            return (
+                              <BetCard
+                                key={match.fixture.id}
+                                odds={formattedOdds}
+                                darkMode={darkMode}
+                                event={`${match.teams.home.name} vs ${match.teams.away.name}`}
+                                homeTeam={match.teams.home.name}
+                                awayTeam={match.teams.away.name}
+                                matchTime={format(
+                                  new Date(match.fixture.date),
+                                  "HH:mm"
+                                )}
+                                isFirstCard={isFirstCard}
+                              />
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <p>No matches available for this league.</p>
-                )}
-              </div>
-            )}
-          </main>
+                    ))
+                  ) : (
+                    <p>No matches available for this league.</p>
+                  )}
+                </div>
+              )}
+            </main>
+          </div>
         </div>
-      </div>
 
-      <MobileMenu
-        menuOpen={menuOpen}
-        setMenuOpen={setMenuOpen}
-        darkMode={darkMode}
-      />
-    </div>
+        <MobileMenu
+          menuOpen={menuOpen}
+          setMenuOpen={setMenuOpen}
+          darkMode={darkMode}
+        />
+      </div>
+    </AuthGuard>
   );
 }

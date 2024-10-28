@@ -139,7 +139,7 @@ const BetCard: React.FC<BetCardProps> = ({
           </div>
         )
       ) : (
-        <p>No odds available</p>
+        <p className="px-3 py-2">No odds available</p>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
