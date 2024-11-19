@@ -75,13 +75,13 @@ const BetCard: React.FC<BetCardProps> = ({
 
   return (
     <div
-      className={`${darkMode ? "bg-gray-800" : "bg-white"} shadow-md pt-2 ${
-        isFirstCard ? "rounded-b-lg" : ""
-      } ${isFirstCard ? "" : "rounded-lg"}`}
+      className={`${darkMode ? "bg-gray-800 border-white" : "bg-white"} shadow pt-2 ${
+        isFirstCard ? "border-b-[1px] border-x-[1px] border-black" : ""
+      } ${isFirstCard ? "" : "border-[1px] border-black"}`}
     >
-      <div className="px-3 mb-3 flex justify-between items-center">
-        <button className="mb-3 text-lg font-poppins">{event}</button>
-        <span className="text-sm font-light">{matchTime}</span>
+      <div className="px-3 mb-5 flex justify-between items-center">
+        <button className="md:text-xl text-md font-sans">{event}</button>
+        <span className="text-sm font-medium">{matchTime}</span>
       </div>
       <h2 className="text-base font-medium px-3 font-bebas">Resultado Final</h2>
 
@@ -95,12 +95,6 @@ const BetCard: React.FC<BetCardProps> = ({
                   darkMode
                     ? "bg-transparent text-white hover:text-black hover:bg-blue-300"
                     : "bg-transparent text-black hover:bg-blue-300"
-                } ${
-                  index === 0
-                    ? "rounded-bl-lg"
-                    : index === odds.length - 1
-                    ? "rounded-br-lg"
-                    : ""
                 }`}
                 disabled={!odd.odd}
                 onClick={() => handleOpenDialog(index, odd.odd)}
@@ -121,12 +115,6 @@ const BetCard: React.FC<BetCardProps> = ({
                   darkMode
                     ? "bg-transparent text-white hover:text-black hover:bg-blue-300"
                     : "bg-transparent text-black hover:bg-blue-300"
-                } ${
-                  index === 0
-                    ? "rounded-bl-lg"
-                    : index === odds.length - 1
-                    ? "rounded-br-lg"
-                    : ""
                 }`}
                 disabled={odd === undefined}
                 onClick={() => handleOpenDialog(index, odd.odd)}
@@ -150,7 +138,7 @@ const BetCard: React.FC<BetCardProps> = ({
           }`}
         >
           <DialogHeader className="items-start">
-            <DialogTitle className="pt-4 ml-4 font-poppins">
+            <DialogTitle className="pt-4 ml-4 ">
               {selectedTeam ? selectedTeam : "Place a Bet"}
             </DialogTitle>
             <DialogDescription className="ml-4 font-bebas">
@@ -162,14 +150,14 @@ const BetCard: React.FC<BetCardProps> = ({
               <label className="block text-sm font-medium">
                 Valor da Aposta
               </label>
-              <h2 className="font-poppins">{selectedOdd ?? "N/A"}</h2>
+              <h2>{selectedOdd ?? "N/A"}</h2>
             </div>
             <input
               type="number"
               value={betAmount}
               onChange={(e) => setBetAmount(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none sm:text-sm"
-              placeholder="Insira o valor"
+              placeholder="Insira o valor..."
             />
           </div>
           <DialogFooter className="flex flex-row !w-full !justify-center border-t-[1px]">

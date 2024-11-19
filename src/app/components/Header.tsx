@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({darkMode, setDarkMode}) => {
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/">
-          <h1 className="text-2xl font-bold font-poppins cursor-pointer">
+          <h1 className="text-2xl font-semibold cursor-pointer">
             TestBet
           </h1>
         </Link>
