@@ -6,11 +6,11 @@ import Sidebar from "./components/sidebar";
 import BetCard from "./components/BetCard";
 import MobileMenu from "./components/MobileMenu";
 import { Fixture } from "../../types";
-import {format} from "date-fns";
+import {format, Match} from "date-fns";
 import {ptBR} from "date-fns/locale";
 import AuthGuard from "./AuthGuard";
 import Loader from "./components/Loader";
-import {bets, teams, getBetsByLeague} from "./Database";
+import {getBetsByLeague} from "./Database";
 
 interface Event {
   id: number;
@@ -18,24 +18,40 @@ interface Event {
   odds: {[key: string]: number};
 }
 
-interface League {
-  countryCode: string;
-  events: Event[];
+// interface League {
+//   countryCode: string;
+//   events: Event[];
+// }
+
+// type SidebarProps = {
+//   setActiveLeague: (name: string, id: number) => void;
+// };
+
+interface MatchFixture {
+  teams: {
+    home: {name: string};
+    away: {name: string};
+  };
+  fixture: {
+    id: number | string;
+    date: string;
+  };
+  odds: Array<{
+    value: string;
+    odd: string;
+  }>;
 }
 
-type SidebarProps = {
-  setActiveLeague: (name: string, id: number) => void;
-};
 
 export default function HomePage() {
   const [darkMode, setDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeLeague, setActiveLeague] = useState<string>("Bundesliga");
   const [upcomingMatches, setUpcomingMatches] = useState<{
-    [date: string]: Fixture[];
+    [date: string]: MatchFixture[];
   }>({});
   const [loading, setLoading] = useState(false);
-  const [odds, setOdds] = useState<any[]>([]);
+  // const [odds, setOdds] = useState<any[]>([]);
 
   // const fetchOddsByFixtureId = async (fixtureId: number) => {
   //   const apiKey = process.env.NEXT_PUBLIC_API_FOOTBALL_KEY;
@@ -152,10 +168,8 @@ export default function HomePage() {
     try {
       // Buscar apostas pela liga
       const leagueBets = getBetsByLeague(leagueName);
-
-      // Agrupar apostas por data
       const groupedMatches = leagueBets.reduce(
-        (acc: {[date: string]: any[]}, bet) => {
+        (acc: {[date: string]: MatchFixture[]}, bet) => {
           let matchDate = format(generateMockDate(leagueName), "ccc, dd MMM", {
             locale: ptBR,
           }).toLowerCase();

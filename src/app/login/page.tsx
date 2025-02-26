@@ -8,7 +8,7 @@ import Loader from "../components/Loader";
 import {Label} from "../../components/ui/label";
 import {Input} from "../../components/ui/input";
 import {cn} from "@/lib/utils";
-import {IconBrandGithub, IconBrandGoogle} from "@tabler/icons-react";
+import {FirebaseError} from "firebase/app";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -19,19 +19,42 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Ativa o loader
+    setLoading(true); 
     try {
-      // Logar o usuário
       await signInWithEmailAndPassword(auth, email, password);
 
-      // Adiciona um delay de 2 segundos antes de redirecionar
       setTimeout(() => {
         router.push("/");
       }, 2000);
-    } catch (err: any) {
-      setError("Failed to log in: " + err.message);
+    } catch (err: unknown) {
+      if (err instanceof FirebaseError) {
+        const errorMessage = getFirebaseErrorMessage(err.code);
+        setError(errorMessage);
+      } else {
+        setError("An error occurred during login. Please try again.");
+      }
     } finally {
-      setLoading(false); // Desativa o loader
+      setLoading(false); // Deactivate loader
+    }
+  };
+
+  // Function to map error codes to friendly messages
+  const getFirebaseErrorMessage = (errorCode: string): string => {
+    switch (errorCode) {
+      case "auth/invalid-email":
+        return "Invalid email. Please check the format.";
+      case "auth/user-disabled":
+        return "This account has been disabled. Please contact support.";
+      case "auth/user-not-found":
+        return "User not found. Check your email or create an account.";
+      case "auth/wrong-password":
+        return "Incorrect password. Please try again.";
+      case "auth/too-many-requests":
+        return "Too many login attempts. Please try again later.";
+      case "auth/network-request-failed":
+        return "Connection error. Check your internet and try again.";
+      default:
+        return `Login error: ${errorCode}`;
     }
   };
 
@@ -40,10 +63,10 @@ const LoginPage = () => {
       {loading && <Loader />}
       <div className="max-w-md mx-auto p-8 bg-white dark:bg-black rounded-lg shadow-md w-[90%] md:w-full lg:w-full">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-          Bem-vindo à TestBet
+          Welcome to TestBet
         </h2>
         <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-          Insira suas credenciais para entrar.
+          Enter your credentials to log in.
         </p>
 
         <form className="mt-5" onSubmit={handleLogin}>
@@ -60,7 +83,7 @@ const LoginPage = () => {
             />
           </LabelInputContainer>
           <LabelInputContainer className="mb-8">
-            <Label htmlFor="password">Senha</Label>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               placeholder="••••••••"
@@ -78,7 +101,7 @@ const LoginPage = () => {
             type="submit"
             className="bg-gradient-to-br from-green-500 to-neutral-600 hover:to-green-800 block hover-button w-full text-white rounded-md h-10 font-medium transition-all duration-300"
           >
-            <span className="relative z-10 ">Entrar &rarr;</span>
+            <span className="relative z-10 ">Login &rarr;</span>
             <BottomGradient />
           </button>
 
@@ -88,7 +111,7 @@ const LoginPage = () => {
               onClick={() => router.push("/register")}
               type="button"
             >
-              Registre-se
+              Register
             </button>
           </div>
         </form>

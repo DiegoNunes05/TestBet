@@ -35,7 +35,7 @@ const BetCard: React.FC<BetCardProps> = ({
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [selectedOdd, setSelectedOdd] = useState<string | undefined>(undefined);
   const [betAmount, setBetAmount] = useState<number | string>("");
-  const entries = Object.entries(odds);
+  // const entries = Object.entries(odds);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);

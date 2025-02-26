@@ -11,10 +11,10 @@ import Loader from "../components/Loader";
 import {Label} from "../../components/ui/label";
 import {Input} from "../../components/ui/input";
 import {cn} from "@/lib/utils";
+import { FirebaseError } from "firebase/app";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("Sr.");
@@ -28,20 +28,39 @@ const RegisterPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Criar a conta do usuário
       await createUserWithEmailAndPassword(auth, email, password);
-
-      // Logar o usuário automaticamente após o registro
       await signInWithEmailAndPassword(auth, email, password);
 
-      // Redirecionar para a página inicial ou página protegida
       setTimeout(() => {
         router.push("/");
       }, 2000);
-    } catch (err: any) {
-      setError("Failed to register: " + err.message);
+    } catch (err: unknown) {
+      if (err instanceof FirebaseError) {
+        const errorMessage = getFirebaseRegistrationErrorMessage(err.code);
+        setError(errorMessage);
+      } else {
+        setError("An error occurred during registration. Please try again.");
+      }
     } finally {
-      setLoading(false); // Desativa o loader
+      setLoading(false);
+    }
+  };
+
+  // Function to map Firebase registration error codes to friendly messages
+  const getFirebaseRegistrationErrorMessage = (errorCode: string): string => {
+    switch (errorCode) {
+      case "auth/email-already-in-use":
+        return "This email is already registered. Try logging in instead.";
+      case "auth/invalid-email":
+        return "Invalid email format. Please check and try again.";
+      case "auth/weak-password":
+        return "Password is too weak. Use at least 6 characters with letters and numbers.";
+      case "auth/operation-not-allowed":
+        return "Registration is currently disabled. Please try again later.";
+      case "auth/network-request-failed":
+        return "Network error. Please check your internet connection.";
+      default:
+        return `Registration error: ${errorCode}`;
     }
   };
 
@@ -54,10 +73,10 @@ const RegisterPage = () => {
       {loading && <Loader />}
       <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-          Registre-se na TestBet
+          Register with TestBet
         </h2>
         <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-          Preencha os campos abaixo para criar uma conta.
+          PFill in the fields to create an account.
         </p>
 
         <form className="mt-5" onSubmit={handleRegister}>
@@ -98,7 +117,7 @@ const RegisterPage = () => {
           </div>
 
           <LabelInputContainer className="mb-4">
-            <Label htmlFor="firstName">Primeiro Nome</Label>
+            <Label htmlFor="firstName">First Name</Label>
             <Input
               id="firstName"
               placeholder="Primeiro Nome"
@@ -111,7 +130,7 @@ const RegisterPage = () => {
           </LabelInputContainer>
 
           <LabelInputContainer className="mb-4">
-            <Label htmlFor="lastName">Sobrenome</Label>
+            <Label htmlFor="lastName">Last Name</Label>
             <Input
               id="lastName"
               placeholder="Sobrenome"
@@ -128,7 +147,7 @@ const RegisterPage = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              placeholder="Dia"
+              placeholder="Day"
               value={birthDate.day}
               onChange={(e) => {
                 if (/^\d*$/.test(e.target.value)) {
@@ -145,7 +164,7 @@ const RegisterPage = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              placeholder="Mês"
+              placeholder="Month"
               value={birthDate.month}
               onChange={(e) => {
                 if (/^\d*$/.test(e.target.value)) {
@@ -162,7 +181,7 @@ const RegisterPage = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              placeholder="Ano"
+              placeholder="Year"
               value={birthDate.year}
               onChange={(e) => {
                 if (/^\d*$/.test(e.target.value)) {
@@ -177,7 +196,7 @@ const RegisterPage = () => {
           </div>
 
           <LabelInputContainer className="mb-4">
-            <Label htmlFor="password">Senha</Label>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               placeholder="••••••••"
@@ -195,18 +214,18 @@ const RegisterPage = () => {
             type="submit"
             className="bg-gradient-to-br from-green-500 to-neutral-600 hover:to-green-800 block w-full hover-button text-white rounded-md h-10 font-medium transition-all duration-300"
           >
-            Registrar
+            Register
           </button>
 
           <div className="flex justify-center mt-4">
             <p>
-              Já possui uma conta?{" "}
+              Already have an account?{" "}
               <button
                 className="text-blue-800 underline"
                 onClick={() => router.push("/login")}
                 type="button"
               >
-                Fazer login
+                Log in
               </button>
             </p>
           </div>

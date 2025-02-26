@@ -120,6 +120,20 @@ type AllFixtures = {
     fixtures: Fixture[]
 }
 
+interface MatchFixture {
+  teams: {
+    home: {name: string};
+    away: {name: string};
+  };
+  fixture: {
+    id: number | string;
+    date: string;
+  };
+  odds: Array<{
+    value: string;
+    odd: string;
+  }>;
+}
 
 
 export { Standing, Team, AllFixtures, Fixture }

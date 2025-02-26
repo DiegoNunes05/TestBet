@@ -7,7 +7,7 @@ interface Bet {
 }
 
 const BetHistory = () => {
-  const [bets, setBets] = useState<Bet[]>([
+  const [bets] = useState<Bet[]>([
     {event: "Team A vs Team B", amount: 100, status: "Won"},
     {event: "Player X vs Player Y", amount: 50, status: "Lost"},
   ]);

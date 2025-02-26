@@ -7,22 +7,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog"; // Seu componente de Dialog importado
+} from "@/components/ui/dialog"; 
 
 export default function TestDialog() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleOpen = () => {
-    console.log("Abrindo o dialog");
-    setIsDialogOpen(true);
-  };
-
-  const handleClose = () => {
-    console.log("Fechando o dialog");
-    setIsDialogOpen(false);
-  };
-
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <button
