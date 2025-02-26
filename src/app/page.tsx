@@ -5,18 +5,17 @@ import Header from "./components/Header";
 import Sidebar from "./components/sidebar";
 import BetCard from "./components/BetCard";
 import MobileMenu from "./components/MobileMenu";
-import { Fixture } from "../../types";
-import {format, Match} from "date-fns";
+import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
 import AuthGuard from "./AuthGuard";
 import Loader from "./components/Loader";
 import {getBetsByLeague} from "./Database";
 
-interface Event {
-  id: number;
-  event: string;
-  odds: {[key: string]: number};
-}
+// interface Event {
+//   id: number;
+//   event: string;
+//   odds: {[key: string]: number};
+// }
 
 // interface League {
 //   countryCode: string;
