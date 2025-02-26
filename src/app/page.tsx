@@ -219,7 +219,7 @@ export default function HomePage() {
 
   useEffect(() => {
     handleLeagueChange("Bundesliga");
-  }, []);
+  }, [handleLeagueChange]);
 
   return (
     <AuthGuard>
