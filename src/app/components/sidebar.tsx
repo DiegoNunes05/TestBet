@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {teams} from "../Database"; // Importação do banco de dados local
+import {teams} from "../../lib/Database"; // Importação do banco de dados local
 
 interface SidebarProps {
   setActiveLeague: (name: string) => void;

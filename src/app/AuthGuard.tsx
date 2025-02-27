@@ -16,7 +16,7 @@ const AuthGuard = ({children}: {children: React.ReactNode}) => {
       if (user) {
         setAuthenticated(true);
       } else {
-        router.push("/login");
+        router.push("/home");
       }
       setLoading(false);
     });

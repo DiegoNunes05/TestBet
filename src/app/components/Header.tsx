@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({darkMode, setDarkMode}) => {
     try {
       await signOut(auth);
       // Redireciona para a página de login ou inicial após o logout
-      router.push("/login"); // Use o Next.js useRouter para redirecionar
+      router.push("/home"); // Use o Next.js useRouter para redirecionar
     } catch (error) {
       console.error("Erro ao deslogar:", error);
     }

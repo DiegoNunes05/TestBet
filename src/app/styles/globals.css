@@ -140,3 +140,13 @@ body {
 .hover-button {
   transition: all 0.3s ease-in-out;
 }
+
+/* New Palletes */
+
+:root {
+  --first-green: #F4FFC3;
+  --second-green: #A9C46C;
+  --third-green: #62825D;
+  --last-green: #526E48;
+  --strong-green: #415738;
+}

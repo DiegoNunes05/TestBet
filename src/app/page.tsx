@@ -9,7 +9,7 @@ import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
 import AuthGuard from "./AuthGuard";
 import Loader from "./components/Loader";
-import {getBetsByLeague} from "./Database";
+import {getBetsByLeague} from "../lib/Database";
 
 // interface Event {
 //   id: number;
