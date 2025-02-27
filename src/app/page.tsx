@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/sidebar";
 import BetCard from "./components/BetCard";
@@ -160,9 +160,9 @@ export default function HomePage() {
     return baseDate;
   };
 
-  const handleLeagueChange = (leagueName: string) => {
-    setActiveLeague(leagueName);
-    setLoading(true);
+  const handleLeagueChange = useCallback((leagueName: string) => {
+  setActiveLeague(leagueName);
+  setLoading(true);
 
     try {
       // Buscar apostas pela liga
@@ -215,11 +215,11 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     handleLeagueChange("Bundesliga");
-  }, [handleLeagueChange]);
+  }, []);
 
   return (
     <AuthGuard>

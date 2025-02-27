@@ -7,6 +7,7 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebaseConfig";
 import router from "next/router";
+import { useCallback } from "react";
 
 interface HeaderProps {
   darkMode: boolean;
@@ -16,7 +17,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({darkMode, setDarkMode}) => {
   const {user} = useAuth();
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await signOut(auth);
       // Redireciona para a página de login ou inicial após o logout
@@ -24,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({darkMode, setDarkMode}) => {
     } catch (error) {
       console.error("Erro ao deslogar:", error);
     }
-  };
+  }, [router]);
 
 
   return (

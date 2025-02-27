@@ -41,6 +41,8 @@ const LoginPage = () => {
   // Function to map error codes to friendly messages
   const getFirebaseErrorMessage = (errorCode: string): string => {
     switch (errorCode) {
+      case "auth/invalid-credential":
+        return "Incorrect email or password. Please verify your information.";
       case "auth/invalid-email":
         return "Invalid email. Please check the format.";
       case "auth/user-disabled":
