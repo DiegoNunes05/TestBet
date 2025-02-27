@@ -27,7 +27,7 @@ export default function HomePage() {
 
       {/* Mobile Layout - Imagem de fundo com sobreposição */}
       <div className="lg:hidden flex flex-col flex-grow">
-        <div className="relative w-full h-screen">
+        <div className="relative w-full h-[calc(100vh-60px)]">
           <Image
             src={HomeImage}
             alt="Background"
@@ -51,8 +51,8 @@ export default function HomePage() {
       </div>
 
       {/* Desktop Layout */}
-      <div className="container relative hidden h-[100vh] flex-col items-center justify-center lg:grid lg:max-w-none lg:grid-cols-10 lg:px-0">
-        <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex overflow-hidden col-span-6">
+      <div className="container relative hidden h-[calc(100vh-60px)] flex-col items-center justify-center lg:grid lg:max-w-none lg:grid-cols-10 lg:px-0">
+        <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex overflow-hidden col-span-7">
           <div className="absolute inset-0">
             <Image
               src={HomeImage}
@@ -79,12 +79,12 @@ export default function HomePage() {
             </blockquote>
           </div>
         </div>
-        <div className="lg:p-8 col-span-4 lg:bg-transparent bg-white rounded-md">
+        <div className="lg:p-8 col-span-3 lg:bg-transparent bg-white rounded-md">
           <AuthSwitcher />
         </div>
       </div>
 
-      <Footer className="mt-auto" />
+      <Footer className="lg:h-[60px] mt-auto" />
     </div>
   );
 }
