@@ -52,7 +52,7 @@ export function AuthDrawer() {
               </p>
             ) : (
               <p>
-                &ldquo;Don't have an account?&ldquo;{" "}
+                {"Don't have an account?"}{" "}
                 <Button
                   variant="link"
                   className="p-0 text-primary underline"
