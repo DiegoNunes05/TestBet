@@ -36,7 +36,7 @@ export function AuthSwitcher() {
           </p>
         ) : (
           <p>
-            Don't have an account?{" "}
+            &ldquo;Don't have an account?&ldquo;{" "}
             <Button
               variant="link"
               className="p-0 text-primary underline"

@@ -23,9 +23,7 @@ export function AuthDrawer() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button className="lg:hidden bg-transparent">
-          Login
-        </Button>
+        <Button className="lg:hidden bg-transparent">Login</Button>
       </DrawerTrigger>
       <DrawerContent className="w-[95%] md:w-[70%] m-auto">
         <div className="p-4 pb-0">
@@ -54,7 +52,7 @@ export function AuthDrawer() {
               </p>
             ) : (
               <p>
-                Don't have an account?{" "}
+                &ldquo;Don't have an account?&ldquo;{" "}
                 <Button
                   variant="link"
                   className="p-0 text-primary underline"
