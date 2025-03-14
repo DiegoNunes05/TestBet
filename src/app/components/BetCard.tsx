@@ -113,8 +113,8 @@ const BetCard: React.FC<BetCardProps> = ({
                 key={index}
                 className={`flex-1 text-start px-3 py-2 transition-colors ${
                   darkMode
-                    ? "bg-transparent text-white hover:text-black hover:bg-blue-300"
-                    : "bg-transparent text-black hover:bg-blue-300"
+                    ? "bg-transparent text-white hover:text-black hover:bg-gray-400"
+                    : "bg-transparent text-black hover:bg-slate-300"
                 }`}
                 disabled={odd === undefined}
                 onClick={() => handleOpenDialog(index, odd.odd)}

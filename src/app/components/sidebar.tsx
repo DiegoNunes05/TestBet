@@ -51,7 +51,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       <div className="flex items-center gap-2 mb-4">
         <h2 className="text-xl font-medium font-bebas">Leagues</h2>
-        <FontAwesomeIcon icon={faFutbol} className="w-4 h-4 mb-[3px]" />
+        <FontAwesomeIcon
+          icon={faFutbol}
+          className="w-4 h-4 mb-[3px] text-[var(--third-green)]"
+        />
       </div>
 
       <Accordion type="single" collapsible className="w-full pr-3">
@@ -68,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           return (
             <AccordionItem key={code} value={code}>
-              <AccordionTrigger className="py-1 hover:no-underline hover:text-blue-800">
+              <AccordionTrigger className="py-1 hover:no-underline hover:text-[var(--third-green)]">
                 <div className="flex items-center gap-2">
                   <Flag code={flagCode} className="w-4 h-4 mb-1" />
                   <span className="font-bebas text-base">{name}</span>
@@ -84,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           setActiveLeague(league);
                           setMenuOpen(false);
                         }}
-                        className="w-full text-left font-bebas hover:text-blue-500"
+                        className="w-full text-left font-bebas hover:text-[var(--second-green)]"
                       >
                         {league}
                       </button>

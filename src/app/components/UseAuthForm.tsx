@@ -55,7 +55,7 @@ export function UserAuthForm({
       }
 
       setTimeout(() => {
-        router.push("/");
+        router.push("/home");
       }, 100);
     } catch (err: unknown) {
       if (err instanceof FirebaseError) {
